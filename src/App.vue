@@ -1,22 +1,49 @@
 <template>
+  <nav class="navbar navbar-expand bg-primary navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        Olympus
+      </a>
+      <div>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: selectedTab === Tab.INPUT }" href="#"
+               @click="selectedTab = Tab.INPUT">Input</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: selectedTab === Tab.STATS }" href="#"
+               @click="selectedTab = Tab.STATS">Statistik</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: selectedTab === Tab.LOG }" href="#"
+               @click="selectedTab = Tab.LOG">Logbog</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
-    <div class="row my-3">
-      <h1 class="display-4">Chickens</h1>
-    </div>
-
-    <div class="row">
-
-    </div>
+    <TabInput v-if="selectedTab === Tab.INPUT"></TabInput>
+    <TabStats v-if="selectedTab === Tab.STATS"></TabStats>
+    <TabLog v-if="selectedTab === Tab.LOG"></TabLog>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
+import {Tab} from "@/types/Tab";
+import TabLog from "@/components/TabLog.vue";
+import TabInput from "@/components/TabInput.vue";
+import TabStats from "@/components/TabStats.vue";
 
 export default defineComponent({
-  components: {},
+  components: {TabInput, TabStats, TabLog},
   data() {
-    return {};
+    return {
+      Tab,
+      selectedTab: Tab.INPUT as Tab,
+    };
   },
   computed: {},
   methods: {},
