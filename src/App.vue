@@ -23,6 +23,8 @@
     </div>
   </nav>
 
+  <ToastComponent></ToastComponent>
+
   <div class="container">
     <TabInput v-if="selectedTab === Tab.INPUT"></TabInput>
     <TabStats v-if="selectedTab === Tab.STATS"></TabStats>
@@ -36,9 +38,10 @@ import {Tab} from "@/types/Tab";
 import TabLog from "@/components/TabLog.vue";
 import TabInput from "@/components/TabInput.vue";
 import TabStats from "@/components/TabStats.vue";
+import ToastComponent from "@/components/ToastComponent.vue";
 
 export default defineComponent({
-  components: {TabInput, TabStats, TabLog},
+  components: {ToastComponent, TabInput, TabStats, TabLog},
   data() {
     return {
       Tab,
