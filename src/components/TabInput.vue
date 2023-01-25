@@ -17,7 +17,7 @@
 
   <div class="row mb-5">
     <h2>Æg</h2>
-    <form @submit="saveEgg()">
+    <form @submit.prevent="saveEggEvent()">
       <div class="input-group input-group-lg mb-3 egg-input">
         <button class="btn btn-outline-secondary" type="button"
                 @click="numEggs--" :disabled="numEggs === 1">
@@ -37,7 +37,7 @@
 
   <div class="row">
     <h2>Køb og salg</h2>
-    <form @submit="saveTransaction()">
+    <form @submit.prevent="saveTransaction()">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
                v-model="note">
@@ -55,7 +55,6 @@
       </div>
     </form>
   </div>
-
 </template>
 
 <script lang="ts">
@@ -63,6 +62,7 @@ import {defineComponent} from "vue";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ToastService} from "@/util/ToastService";
+import {EggEventApi} from "@/util/EggEventApi";
 
 const now = new Date();
 
@@ -78,19 +78,27 @@ export default defineComponent({
     };
   },
   methods: {
-    saveEgg(): void {
-      ToastService.showToast({
-        title: "Succes",
-        body: "Ægge-data gemt",
-        timestamp: new Date()
-      });
+    saveEggEvent(): void {
+      EggEventApi.createEggEvent({
+        eggEventInput: {
+          amount: this.numEggs,
+          date: this.date
+        }
+      })
+      .then((_) => {
+        ToastService.showToast({
+          title: "Succes",
+          body: "Input gemt",
+          timestamp: new Date()
+        });
 
-      this.numEggs = 1;
+        this.numEggs = 1;
+      })
     },
     saveTransaction(): void {
       ToastService.showToast({
         title: "Succes",
-        body: "Køb/salg gemt",
+        body: "Input gemt",
         timestamp: new Date()
       });
 

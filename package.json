@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "gen-api": "openapi-generator-cli generate -i https://chicken-data.private.fantastiskefroe.dk/q/openapi -g typescript-rxjs -o ./src/api/chicken-data --additional-properties=supportsES6=true",
+    "gen-api": "openapi-generator-cli generate -i https://chicken-data.private.fantastiskefroe.dk/q/openapi -g typescript-fetch -o ./src/api/chicken-data --additional-properties=supportsES6=true",
+    "gen-api-local": "openapi-generator-cli generate -i http://localhost:8080/q/openapi -g typescript-fetch -o ./src/api/chicken-data --additional-properties=supportsES6=true",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",

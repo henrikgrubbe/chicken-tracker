@@ -25,12 +25,14 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
           labels: |
             maintainer=${{ github.repository_owner }}
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=Commit message: ${{ github.event.head_commit.message }}
-          context: .
-          push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
