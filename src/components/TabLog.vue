@@ -94,6 +94,8 @@ export default defineComponent({
       if (logLine.type === "EggEvent") {
         return `${logLine.amount} stk.`
       }
+
+      return "ikke et æg";
     }
   },
   watch: {
