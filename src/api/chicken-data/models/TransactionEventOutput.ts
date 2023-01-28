@@ -16,53 +16,60 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface EggEventOutput
+ * @interface TransactionEventOutput
  */
-export interface EggEventOutput {
+export interface TransactionEventOutput {
     /**
      * 
      * @type {number}
-     * @memberof EggEventOutput
+     * @memberof TransactionEventOutput
      */
     id: number;
     /**
      * 
      * @type {number}
-     * @memberof EggEventOutput
+     * @memberof TransactionEventOutput
      */
     amount: number;
     /**
      * 
+     * @type {string}
+     * @memberof TransactionEventOutput
+     */
+    note: string;
+    /**
+     * 
      * @type {Date}
-     * @memberof EggEventOutput
+     * @memberof TransactionEventOutput
      */
     date: Date;
     /**
      * 
      * @type {Date}
-     * @memberof EggEventOutput
+     * @memberof TransactionEventOutput
      */
     createdDateTime: Date;
 }
 
 /**
- * Check if a given object implements the EggEventOutput interface.
+ * Check if a given object implements the TransactionEventOutput interface.
  */
-export function instanceOfEggEventOutput(value: object): boolean {
+export function instanceOfTransactionEventOutput(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "id" in value;
     isInstance = isInstance && "amount" in value;
+    isInstance = isInstance && "note" in value;
     isInstance = isInstance && "date" in value;
     isInstance = isInstance && "createdDateTime" in value;
 
     return isInstance;
 }
 
-export function EggEventOutputFromJSON(json: any): EggEventOutput {
-    return EggEventOutputFromJSONTyped(json, false);
+export function TransactionEventOutputFromJSON(json: any): TransactionEventOutput {
+    return TransactionEventOutputFromJSONTyped(json, false);
 }
 
-export function EggEventOutputFromJSONTyped(json: any, ignoreDiscriminator: boolean): EggEventOutput {
+export function TransactionEventOutputFromJSONTyped(json: any, ignoreDiscriminator: boolean): TransactionEventOutput {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -70,12 +77,13 @@ export function EggEventOutputFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'id': json['id'],
         'amount': json['amount'],
+        'note': json['note'],
         'date': json['date'],
         'createdDateTime': json['created_date_time'],
     };
 }
 
-export function EggEventOutputToJSON(value?: EggEventOutput | null): any {
+export function TransactionEventOutputToJSON(value?: TransactionEventOutput | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -86,6 +94,7 @@ export function EggEventOutputToJSON(value?: EggEventOutput | null): any {
         
         'id': value.id,
         'amount': value.amount,
+        'note': value.note,
         'date': value.date,
         'created_date_time': value.createdDateTime,
     };

@@ -16,50 +16,58 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface EggEventInput
+ * @interface TransactionEventInput
  */
-export interface EggEventInput {
+export interface TransactionEventInput {
     /**
      * 
      * @type {number}
-     * @memberof EggEventInput
+     * @memberof TransactionEventInput
      */
     amount: number;
     /**
      * 
+     * @type {string}
+     * @memberof TransactionEventInput
+     */
+    note: string;
+    /**
+     * 
      * @type {Date}
-     * @memberof EggEventInput
+     * @memberof TransactionEventInput
      */
     date: Date;
 }
 
 /**
- * Check if a given object implements the EggEventInput interface.
+ * Check if a given object implements the TransactionEventInput interface.
  */
-export function instanceOfEggEventInput(value: object): boolean {
+export function instanceOfTransactionEventInput(value: object): boolean {
     let isInstance = true;
     isInstance = isInstance && "amount" in value;
+    isInstance = isInstance && "note" in value;
     isInstance = isInstance && "date" in value;
 
     return isInstance;
 }
 
-export function EggEventInputFromJSON(json: any): EggEventInput {
-    return EggEventInputFromJSONTyped(json, false);
+export function TransactionEventInputFromJSON(json: any): TransactionEventInput {
+    return TransactionEventInputFromJSONTyped(json, false);
 }
 
-export function EggEventInputFromJSONTyped(json: any, ignoreDiscriminator: boolean): EggEventInput {
+export function TransactionEventInputFromJSONTyped(json: any, ignoreDiscriminator: boolean): TransactionEventInput {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
         'amount': json['amount'],
+        'note': json['note'],
         'date': json['date'],
     };
 }
 
-export function EggEventInputToJSON(value?: EggEventInput | null): any {
+export function TransactionEventInputToJSON(value?: TransactionEventInput | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -69,6 +77,7 @@ export function EggEventInputToJSON(value?: EggEventInput | null): any {
     return {
         
         'amount': value.amount,
+        'note': value.note,
         'date': value.date,
     };
 }
