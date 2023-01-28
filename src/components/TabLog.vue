@@ -1,5 +1,7 @@
 <template>
   <EditEggEventModal :log-line="selectedLogLine" @saved="getLogLines"></EditEggEventModal>
+  <EditTransactionEventModal :log-line="selectedLogLine"
+                             @saved="getLogLines"></EditTransactionEventModal>
 
   <div class="row my-3">
     <div>
@@ -27,7 +29,7 @@
         <tbody class="table-group-divider">
         <tr v-for="logLine of logLines" v-bind:key="logLine.key">
           <td>
-            {{ logLine.date }}
+            {{ logLine.date.toLocaleDateString() }}
           </td>
           <td>
             {{ logLine.note }}
@@ -37,8 +39,8 @@
           </td>
           <td>
             <button class="btn btn-sm mb-md-0 rounded-2" type="button"
-                    data-bs-toggle="modal" data-bs-target="#editEggEventModal"
-                    @click="selectedLogLine = logLine">
+                    data-bs-toggle="modal" @click="selectedLogLine = logLine"
+                    :data-bs-target="logLine.type === 'EggEvent' ? '#editEggEventModal' : '#editTransactionEventModal'">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                    class="bi bi-pencil" viewBox="0 0 16 16">
                 <path
@@ -62,6 +64,7 @@ import {
   addDays,
   endOfMonth,
   endOfYear,
+  parseISO,
   startOfMonth,
   startOfYear,
   subMonths,
@@ -70,12 +73,13 @@ import {
 import type {LogLine} from "@/types/LogLine";
 import type {EggEventOutput, TransactionEventOutput} from "@/api/chicken-data";
 import EditEggEventModal from "@/components/EditEggEventModal.vue";
+import EditTransactionEventModal from "@/components/EditTransactionEventModal.vue";
 
 const now = new Date();
 
 export default defineComponent({
   name: "TabLog",
-  components: {EditEggEventModal, Datepicker},
+  components: {EditTransactionEventModal, EditEggEventModal, Datepicker},
   data() {
     return {
       dateRange: [startOfMonth(now), endOfMonth(now)],
@@ -119,7 +123,7 @@ export default defineComponent({
           key: `egg-${event.id}`,
           type: "EggEvent",
           id: event.id,
-          date: event.date,
+          date: parseISO((event.date as unknown as string)),
           note: "Æg",
           amount: event.amount
         };
@@ -130,7 +134,7 @@ export default defineComponent({
           key: `transcation-${event.id}`,
           type: "TransactionEvent",
           id: event.id,
-          date: event.date,
+          date: parseISO((event.date as unknown as string)),
           note: event.note,
           amount: event.amount
         };

@@ -1,37 +1,33 @@
 <template>
-  <div class="modal fade" id="editEggEventModal" tabindex="-1"
-       aria-labelledby="editEggEventModalLabel" aria-hidden="true" ref="modal">
+  <div class="modal fade" id="editTransactionEventModal" tabindex="-1"
+       aria-labelledby="editTransactionEventModalLabel" aria-hidden="true" ref="modal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="editEggEventModalLabel">
-            Rediger æg
+          <h1 class="modal-title fs-5" id="editTransactionEventModalLabel">
+            Rediger
           </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
                   aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label for="editEggEventModalDatepicker" class="form-label">Dato</label>
-            <Datepicker id="editEggEventModalDatepicker" v-model="event.date"
+            <label for="editTransactionEventModalDatepicker" class="form-label">Dato</label>
+            <Datepicker id="editTransactionEventModalDatepicker" v-model="event.date"
                         auto-apply :clearable="false"
                         :teleport-center="true" :enable-time-picker="false"/>
           </div>
 
           <div>
-            <label for="editEggEventModalAmount" class="form-label">Antal</label>
-            <div class="input-group input-group-lg egg-input">
-              <button class="btn btn-outline-secondary" type="button"
-                      @click="event.amount--" :disabled="event.amount === 1">
-                -
-              </button>
-              <input type="number" min="1" class="form-control text-center"
-                     id="editEggEventModalAmount"
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
+                     v-model="event.note">
+              <label for="description">Beskrivelse</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="number" min="0" class="form-control" id="amount" placeholder="kr."
                      v-model="event.amount">
-              <button class="btn btn-outline-secondary" type="button"
-                      @click="event.amount++">
-                +
-              </button>
+              <label for="description">Beløb</label>
             </div>
           </div>
         </div>
@@ -53,18 +49,19 @@
 import {defineComponent, type PropType} from 'vue';
 import type {LogLine} from "@/types/LogLine";
 import Datepicker from "@vuepic/vue-datepicker";
-import {EggEventApi} from "@/util/Api";
+import {TransactionEventApi} from "@/util/Api";
 import {ToastService} from "@/util/ToastService";
 import {differenceInDays} from "date-fns";
 
 const defaultEvent = {
   id: -1,
-  amount: 1,
+  amount: undefined as undefined | number,
+  note: undefined as undefined | string,
   date: new Date(),
 };
 
 export default defineComponent({
-  name: 'EditEggEventModal',
+  name: 'EditTransactionEventModal',
   components: {Datepicker},
   props: {
     logLine: {type: Object as PropType<LogLine>, required: false}
@@ -83,22 +80,24 @@ export default defineComponent({
       setTimeout(() => {
         this.event = {
           id: this.logLine!.id,
-          date: this.logLine!.date,
           amount: this.logLine!.amount,
+          note: this.logLine!.note,
+          date: this.logLine!.date,
         };
       }, 5);
     },
     saveEvent(): void {
-      if (this.logLine === undefined) {
+      if (this.logLine === undefined ||
+          this.event.amount === undefined ||
+          this.event.note === undefined) {
         return;
       }
 
-      console.log(this.event.date)
-
-      EggEventApi.putEggEvent({
+      TransactionEventApi.putTransactionEvent({
         id: this.logLine.id,
-        eggEventInput: {
+        transactionEventInput: {
           amount: this.event.amount,
+          note: this.event.note,
           date: this.event.date
         }
       })
@@ -120,7 +119,8 @@ export default defineComponent({
       }
 
       return differenceInDays(this.logLine.date, this.event.date) === 0
-          && this.logLine.amount === this.event.amount;
+          && this.logLine.amount === this.event.amount
+          && this.logLine.note === this.event.note;
     }
   },
   mounted() {
