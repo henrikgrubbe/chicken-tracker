@@ -35,9 +35,9 @@
     </form>
   </div>
 
-  <div class="row">
-    <h2>Køb og salg</h2>
-    <form @submit.prevent="saveTransaction()">
+  <div class="row mb-5">
+    <h2>Køb</h2>
+    <form @submit.prevent="saveTransaction('sale')">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
                v-model="note">
@@ -45,6 +45,27 @@
       </div>
       <div class="form-floating mb-3">
         <input type="number" min="0" class="form-control" id="amount" placeholder="kr."
+               v-model="amount">
+        <label for="description">Beløb</label>
+      </div>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="submit"
+                :disabled="note === undefined || amount === undefined">Tilføj
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="row">
+    <h2>Salg</h2>
+    <form @submit.prevent="saveTransaction('sale')">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
+               v-model="note">
+        <label for="description">Beskrivelse</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="number" min=0 class="form-control" id="amount" placeholder="kr."
                v-model="amount">
         <label for="description">Beløb</label>
       </div>
@@ -95,14 +116,14 @@ export default defineComponent({
         this.numEggs = 1;
       });
     },
-    saveTransaction(): void {
+    saveTransaction(type: "purchase" | "sale" ): void {
       if (this.amount === undefined || this.note === undefined) {
         return;
       }
 
       TransactionEventApi.createTransactionEvent({
         transactionEventInput: {
-          amount: this.amount,
+          amount: type === "purchase" ? -this.amount : this.amount,
           note: this.note,
           date: this.date
         }
