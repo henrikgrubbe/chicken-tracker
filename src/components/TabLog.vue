@@ -27,13 +27,13 @@
         <tbody class="table-group-divider">
         <tr v-for="logLine of logLines" v-bind:key="logLine.key">
           <td>
-            {{ logLine.date.toLocaleDateString() }}
+            {{ logLine.date }}
           </td>
           <td>
             {{ logLine.note }}
           </td>
-          <td>
-            {{ formatLogLineAmount(logLine) }}
+          <td :style="{ color: getLogLineAmountColor(logLine) }">
+            {{ getFormattedLogLineAmount(logLine) }}
           </td>
           <td>
             <button class="btn btn-sm mb-md-0 rounded-2" type="button"
@@ -57,7 +57,7 @@
 import {defineComponent} from "vue";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import {EggEventApi} from "@/util/Api";
+import {EggEventApi, TransactionEventApi} from "@/util/Api";
 import {
   addDays,
   endOfMonth,
@@ -68,7 +68,7 @@ import {
   subYears
 } from "date-fns";
 import type {LogLine} from "@/types/LogLine";
-import type {EggEventOutput} from "@/api/chicken-data";
+import type {EggEventOutput, TransactionEventOutput} from "@/api/chicken-data";
 import EditEggEventModal from "@/components/EditEggEventModal.vue";
 
 const now = new Date();
@@ -96,33 +96,61 @@ export default defineComponent({
   },
   methods: {
     async getLogLines(): Promise<void> {
-      const eggEventLogLines = await EggEventApi.getEggEvents({
-        from: this.dateRange[0],
-        to: addDays(this.dateRange[1], 1),
-      }).then((eggEvents) => eggEvents.map(logLineFromEggEvent))
+      const from = this.dateRange[0];
+      const to = addDays(this.dateRange[1], 1);
+      const promises = [];
+
+      promises.push(
+          EggEventApi.getEggEvents({from, to})
+          .then((events: EggEventOutput[]) => events.map(logLineFromEggEvent)),
+          TransactionEventApi.getTransactionEvents({from, to})
+          .then((events: TransactionEventOutput[]) => events.map(logLineFromTransactionEvent)),
+      );
+
+      const logLines = await Promise.all(promises)
+      .then((logLineLists) => Array.prototype.concat(...logLineLists))
 
       // Newest first
-      eggEventLogLines.sort((a, b) => b.date.getTime() - a.date.getTime());
-      this.logLines = eggEventLogLines;
+      logLines.sort((a, b) => b.date.getTime() - a.date.getTime());
+      this.logLines = logLines;
 
-
-      function logLineFromEggEvent(eggEvent: EggEventOutput): LogLine {
+      function logLineFromEggEvent(event: EggEventOutput): LogLine {
         return {
-          key: `egg-${eggEvent.id}`,
+          key: `egg-${event.id}`,
           type: "EggEvent",
-          id: eggEvent.id,
-          date: eggEvent.date,
+          id: event.id,
+          date: event.date,
           note: "Æg",
-          amount: eggEvent.amount
+          amount: event.amount
+        };
+      }
+
+      function logLineFromTransactionEvent(event: TransactionEventOutput): LogLine {
+        return {
+          key: `transcation-${event.id}`,
+          type: "TransactionEvent",
+          id: event.id,
+          date: event.date,
+          note: event.note,
+          amount: event.amount
         };
       }
     },
-    formatLogLineAmount(logLine: LogLine): string {
-      if (logLine.type === "EggEvent") {
-        return `${logLine.amount} stk.`
+    getFormattedLogLineAmount(logLine: LogLine): string {
+      switch (logLine.type) {
+        case "EggEvent":
+          return `${logLine.amount} stk.`
+        case "TransactionEvent":
+          return `${logLine.amount.toFixed(2)} kr.`
       }
-
-      return "ikke et æg";
+    },
+    getLogLineAmountColor(logLine: LogLine): string {
+      switch (logLine.type) {
+        case "EggEvent":
+          return "black";
+        case "TransactionEvent":
+          return logLine.amount > 0 ? "#198754" : "#dc3545";
+      }
     }
   },
   watch: {

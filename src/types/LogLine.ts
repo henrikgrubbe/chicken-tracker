@@ -1,6 +1,6 @@
 export interface LogLine {
   key: string
-  type: "EggEvent" | "Transaction"
+  type: "EggEvent" | "TransactionEvent"
   id: number,
   date: Date,
   note: string
