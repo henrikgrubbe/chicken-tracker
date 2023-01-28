@@ -57,7 +57,7 @@
 import {defineComponent} from "vue";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import {EggEventApi} from "@/util/EggEventApi";
+import {EggEventApi} from "@/util/Api";
 import {
   addDays,
   endOfMonth,

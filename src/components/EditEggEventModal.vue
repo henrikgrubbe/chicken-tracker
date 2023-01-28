@@ -53,7 +53,7 @@
 import {defineComponent, type PropType} from 'vue';
 import type {LogLine} from "@/types/LogLine";
 import Datepicker from "@vuepic/vue-datepicker";
-import {EggEventApi} from "@/util/EggEventApi";
+import {EggEventApi} from "@/util/Api";
 import {ToastService} from "@/util/ToastService";
 import {differenceInDays} from "date-fns";
 

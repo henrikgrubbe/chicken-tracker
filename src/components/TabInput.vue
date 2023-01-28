@@ -62,7 +62,7 @@ import {defineComponent} from "vue";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ToastService} from "@/util/ToastService";
-import {EggEventApi} from "@/util/EggEventApi";
+import {EggEventApi, TransactionEventApi} from "@/util/Api";
 
 const now = new Date();
 
@@ -93,17 +93,30 @@ export default defineComponent({
         });
 
         this.numEggs = 1;
-      })
+      });
     },
     saveTransaction(): void {
-      ToastService.showToast({
-        title: "Succes",
-        body: "Input gemt",
-        timestamp: new Date()
-      });
+      if (this.amount === undefined || this.note === undefined) {
+        return;
+      }
 
-      this.note = undefined;
-      this.amount = undefined;
+      TransactionEventApi.createTransactionEvent({
+        transactionEventInput: {
+          amount: this.amount,
+          note: this.note,
+          date: this.date
+        }
+      })
+      .then((_) => {
+        ToastService.showToast({
+          title: "Succes",
+          body: "Input gemt",
+          timestamp: new Date()
+        });
+
+        this.note = undefined;
+        this.amount = undefined;
+      });
     }
   }
 });
