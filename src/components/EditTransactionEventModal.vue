@@ -51,13 +51,13 @@ import type {LogLine} from "@/types/LogLine";
 import Datepicker from "@vuepic/vue-datepicker";
 import {TransactionEventApi} from "@/util/Api";
 import {ToastService} from "@/util/ToastService";
-import {differenceInDays} from "date-fns";
+import {differenceInDays, setHours} from "date-fns";
 
 const defaultEvent = {
   id: -1,
   amount: undefined as undefined | number,
   note: undefined as undefined | string,
-  date: new Date(),
+  date: setHours(new Date(), 12),
 };
 
 export default defineComponent({
@@ -82,7 +82,7 @@ export default defineComponent({
           id: this.logLine!.id,
           amount: this.logLine!.amount,
           note: this.logLine!.note,
-          date: this.logLine!.date,
+          date: setHours(this.logLine!.date, 12),
         };
       }, 5);
     },

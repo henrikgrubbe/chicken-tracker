@@ -55,12 +55,12 @@ import type {LogLine} from "@/types/LogLine";
 import Datepicker from "@vuepic/vue-datepicker";
 import {EggEventApi} from "@/util/Api";
 import {ToastService} from "@/util/ToastService";
-import {differenceInDays} from "date-fns";
+import {differenceInDays, setHours} from "date-fns";
 
 const defaultEvent = {
   id: -1,
   amount: 1,
-  date: new Date(),
+  date: setHours(new Date(), 12),
 };
 
 export default defineComponent({
@@ -83,7 +83,7 @@ export default defineComponent({
       setTimeout(() => {
         this.event = {
           id: this.logLine!.id,
-          date: this.logLine!.date,
+          date: setHours(this.logLine!.date, 12),
           amount: this.logLine!.amount,
         };
       }, 5);
