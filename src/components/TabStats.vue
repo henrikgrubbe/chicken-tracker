@@ -12,7 +12,8 @@
   </div>
 
   <div class="row mb-3">
-    <ul class="list-group">
+    <div>
+      <ul class="list-group">
       <li class="list-group-item list-group-item-action" v-for="item  of items"
           v-bind:key="item.title">
         <div class="d-flex w-100 justify-content-between">
@@ -22,6 +23,7 @@
         <small>{{ item.description }}</small>
       </li>
     </ul>
+    </div>
   </div>
 </template>
 
