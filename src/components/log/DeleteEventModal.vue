@@ -5,12 +5,22 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="deleteEventModalLabel">
-            Slet {{ getTypeText(logLine, false) }}
+            Bekræft sletning
           </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal"
                   aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div v-if="logLine?.type === 'EggEvent'">
+            <p>
+              Æg, {{ logLine?.amount}} stk, fra d. {{ logLine?.date?.toLocaleDateString() }}
+            </p>
+          </div>
+          <div v-if="logLine?.type === 'TransactionEvent'">
+            <p>
+              {{ logLine?.note }}, {{ logLine?.amount}} kr. fra fra d. {{ logLine?.date?.toLocaleDateString() }}
+            </p>
+          </div>
           <p>
             Er du sikker?
           </p>
@@ -44,20 +54,20 @@ export default defineComponent({
     return {}
   },
   methods: {
-    getTypeText(logLine: LogLine | undefined, uppercase: boolean): string | undefined {
+    getTypeText(logLine: LogLine | undefined): string | undefined {
       if (logLine === undefined) {
         return;
       }
 
       if (logLine.type === "EggEvent") {
-        return uppercase ? "Æg" : "æg";
+        return "Æg";
       }
 
       if (logLine.type === "TransactionEvent") {
         if (logLine.amount > 0) {
-          return uppercase ? "Salg" : "salg";
+          return "Salg";
         } else {
-          return uppercase ? "Køb" : "køb";
+          return "Køb";
         }
       }
     },
@@ -67,7 +77,6 @@ export default defineComponent({
       }
 
       let promise;
-
       if (this.logLine.type === "EggEvent") {
         promise = EggEventApi.deleteEggEvent({
           id: this.logLine.id,
@@ -81,7 +90,7 @@ export default defineComponent({
       promise.then(() => {
         ToastService.showToast({
           title: "Succes",
-          body: `${this.getTypeText(this.logLine, true)} slettet`,
+          body: `${this.getTypeText(this.logLine)} slettet`,
           timestamp: new Date()
         });
 
