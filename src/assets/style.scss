@@ -3,6 +3,7 @@
 $theme-colors: (
     'primary': $color-brand,
     'secondary': $color-secondary,
+    'danger': #dc3545,
 );
 
 @import 'bootstrap/scss/bootstrap';
