@@ -1,5 +1,5 @@
 <template>
-  <div class="row my-3">
+  <div class="row my-2">
     <div>
       <h1 class="display-2">Input</h1>
       <hr>

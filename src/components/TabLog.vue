@@ -3,7 +3,7 @@
   <EditTransactionEventModal :log-line="selectedLogLine"
                              @saved="getLogLines"></EditTransactionEventModal>
 
-  <div class="row my-3">
+  <div class="row my-2">
     <div>
       <h1 class="display-2">Logbog</h1>
       <hr>
