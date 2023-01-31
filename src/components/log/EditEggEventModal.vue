@@ -93,8 +93,6 @@ export default defineComponent({
         return;
       }
 
-      console.log(this.event.date)
-
       EggEventApi.putEggEvent({
         id: this.logLine.id,
         eggEventInput: {
@@ -102,7 +100,7 @@ export default defineComponent({
           date: this.event.date
         }
       })
-      .then((_) => {
+      .then(() => {
         ToastService.showToast({
           title: "Succes",
           body: "Opdateret",

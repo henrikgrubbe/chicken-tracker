@@ -85,9 +85,9 @@ import {
 } from "date-fns";
 import type {LogLine} from "@/types/LogLine";
 import type {EggEventOutput, TransactionEventOutput} from "@/api/chicken-data";
-import EditEggEventModal from "@/components/EditEggEventModal.vue";
-import EditTransactionEventModal from "@/components/EditTransactionEventModal.vue";
-import DeleteEventModal from "@/components/DeleteEventModal.vue";
+import EditEggEventModal from "@/components/log/EditEggEventModal.vue";
+import EditTransactionEventModal from "@/components/log/EditTransactionEventModal.vue";
+import DeleteEventModal from "@/components/log/DeleteEventModal.vue";
 
 const now = new Date();
 

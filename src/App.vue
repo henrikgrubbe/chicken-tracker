@@ -35,9 +35,9 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import {Tab} from "@/types/Tab";
-import TabLog from "@/components/TabLog.vue";
-import TabInput from "@/components/TabInput.vue";
-import TabStats from "@/components/TabStats.vue";
+import TabLog from "@/components/log/TabLog.vue";
+import TabInput from "@/components/input/TabInput.vue";
+import TabStats from "@/components/stats/TabStats.vue";
 import ToastComponent from "@/components/ToastComponent.vue";
 
 export default defineComponent({
