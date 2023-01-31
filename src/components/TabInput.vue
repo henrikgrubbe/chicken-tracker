@@ -1,4 +1,51 @@
 <template>
+  <div class="modal fade" id="newTransactionEventModal" tabindex="-1"
+       aria-labelledby="newTransactionEventModalLabel" aria-hidden="true" ref="modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="newTransactionEventModalLabel">
+            Nyt {{ transactionType === "purchase" ? "køb" : "salg" }}
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="newTransactionEventModalDatepicker" class="form-label">Dato</label>
+            <Datepicker id="newTransactionEventModalDatepicker" v-model="transactionEvent.date"
+                        auto-apply :clearable="false"
+                        :teleport-center="true" :enable-time-picker="false"/>
+          </div>
+
+          <div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
+                     v-model="transactionEvent.note">
+              <label for="description">Beskrivelse</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="number" min="0" class="form-control" id="amount" placeholder="Beløb"
+                     v-model="transactionEvent.amount">
+              <label for="description">Beløb</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuller
+          </button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                  :disabled="transactionEvent.note === undefined || transactionEvent.amount === undefined"
+                  @click="saveTransactionEvent">
+            Gem
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <div class="row my-2">
     <div>
       <h1 class="display-2">Input</h1>
@@ -15,7 +62,7 @@
     </form>
   </div>
 
-  <div class="row mb-5">
+  <div class="row mb-4">
     <h2>Æg</h2>
     <form @submit.prevent="saveEggEvent()">
       <div class="input-group input-group-lg mb-3 egg-input">
@@ -35,46 +82,20 @@
     </form>
   </div>
 
-  <div class="row mb-5">
-    <h2>Køb</h2>
-    <form @submit.prevent="saveTransaction('sale')">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
-               v-model="note">
-        <label for="description">Beskrivelse</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="number" min="0" class="form-control" id="amount" placeholder="kr."
-               v-model="amount">
-        <label for="description">Beløb</label>
-      </div>
-      <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="submit"
-                :disabled="note === undefined || amount === undefined">Tilføj
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <div class="row">
-    <h2>Salg</h2>
-    <form @submit.prevent="saveTransaction('sale')">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="description" placeholder="Beskrivelse"
-               v-model="note">
-        <label for="description">Beskrivelse</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="number" min=0 class="form-control" id="amount" placeholder="kr."
-               v-model="amount">
-        <label for="description">Beløb</label>
-      </div>
-      <div class="d-grid gap-2">
-        <button class="btn btn-primary" type="submit"
-                :disabled="note === undefined || amount === undefined">Tilføj
-        </button>
-      </div>
-    </form>
+  <div class="row mb-4">
+    <h2>Køb & salg</h2>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+              @click="transactionType = 'purchase'"
+              data-bs-target="#newTransactionEventModal">
+        Nyt køb
+      </button>
+      <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+              @click="transactionType = 'sale'"
+              data-bs-target="#newTransactionEventModal">
+        Nyt salg
+      </button>
+    </div>
   </div>
 </template>
 
@@ -84,8 +105,10 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ToastService} from "@/util/ToastService";
 import {EggEventApi, TransactionEventApi} from "@/util/Api";
+import {setHours} from "date-fns";
 
-const now = new Date();
+const now = setHours(new Date(), 12);
+
 
 export default defineComponent({
   name: "TabInput",
@@ -94,8 +117,12 @@ export default defineComponent({
     return {
       date: now,
       numEggs: 1 as number,
-      note: undefined as string | undefined,
-      amount: undefined as number | undefined
+      transactionType: undefined as "purchase" | "sale" | undefined,
+      transactionEvent: {
+        date: now,
+        note: undefined as string | undefined,
+        amount: undefined as number | undefined
+      },
     };
   },
   methods: {
@@ -103,40 +130,43 @@ export default defineComponent({
       EggEventApi.createEggEvent({
         eggEventInput: {
           amount: this.numEggs,
-          date: this.date
+          date: setHours(this.date, 12)
         }
       })
-      .then((_) => {
+      .then(() => {
         ToastService.showToast({
           title: "Succes",
-          body: "Input gemt",
+          body: "Æg gemt",
           timestamp: new Date()
         });
 
         this.numEggs = 1;
       });
     },
-    saveTransaction(type: "purchase" | "sale" ): void {
-      if (this.amount === undefined || this.note === undefined) {
+    saveTransactionEvent(): void {
+      if (this.transactionType === undefined ||
+          this.transactionEvent.amount === undefined ||
+          this.transactionEvent.note === undefined) {
         return;
       }
 
       TransactionEventApi.createTransactionEvent({
         transactionEventInput: {
-          amount: type === "purchase" ? -this.amount : this.amount,
-          note: this.note,
-          date: this.date
+          amount: this.transactionType === "purchase" ? -this.transactionEvent.amount : this.transactionEvent.amount,
+          note: this.transactionEvent.note,
+          date: setHours(this.transactionEvent.date, 12)
         }
       })
-      .then((_) => {
+      .then(() => {
         ToastService.showToast({
           title: "Succes",
-          body: "Input gemt",
+          body: this.transactionType === "purchase" ? "Køb gemt" : "Salg gemt",
           timestamp: new Date()
         });
 
-        this.note = undefined;
-        this.amount = undefined;
+        this.transactionEvent.note = undefined;
+        this.transactionEvent.amount = undefined;
+        this.transactionEvent.date = now;
       });
     }
   }
