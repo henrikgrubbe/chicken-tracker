@@ -49,7 +49,7 @@ export default defineComponent({
   components: {Datepicker},
   data() {
     return {
-      dateRange: [startOfMonth(now), endOfMonth(now)],
+      dateRange: [startOfYear(now), endOfYear(now)],
       presetRanges: [
         {label: 'I dag', range: [now, now]},
         {label: 'Denne måned', range: [startOfMonth(now), endOfMonth(now)]},
