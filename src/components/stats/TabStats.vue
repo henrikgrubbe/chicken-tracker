@@ -14,15 +14,15 @@
   <div class="row mb-3">
     <div>
       <ul class="list-group">
-      <li class="list-group-item list-group-item-action" v-for="item  of items"
-          v-bind:key="item.title">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ item.title }}</h5>
-        </div>
-        <p class="mb-1">{{ item.data }}</p>
-        <small>{{ item.description }}</small>
-      </li>
-    </ul>
+        <li class="list-group-item list-group-item-action" v-for="item of items"
+            v-bind:key="item.title">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ item.title }}</h5>
+          </div>
+          <p class="mb-1">{{ item.data }}</p>
+          <small>{{ item.description }}</small>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -74,22 +74,22 @@ export default defineComponent({
       this.items = [
         {
           title: "Udgifter",
-          data: `${result.expenses} kr.`,
+          data: this.formatCurrency(result.expenses),
           description: "Total udgift gennem den valgte periode"
         },
         {
           title: "Indtægter",
-          data: `${result.income} kr.`,
+          data: this.formatCurrency(result.income),
           description: "Total indtægt fra salg gennem den valgte periode"
         },
         {
           title: "Sparet",
-          data: `${result.saved} kr.`,
+          data: this.formatCurrency(result.saved),
           description: "Totalt beløb sparet på æg gennem den valgte periode"
         },
         {
           title: "Balance",
-          data: `${result.balance} kr.`,
+          data: this.formatCurrency(result.balance),
           description: "Endeligt resultat for den valgte periode"
         },
         {
@@ -99,12 +99,12 @@ export default defineComponent({
         },
         {
           title: "Pris per æg",
-          data: `${result.pricePerEgg} kr.`,
+          data: this.formatCurrency(result.pricePerEgg),
           description: "Pris per æg i den valgte periode"
         },
         {
           title: "Pris for næste æg",
-          data: `${result.priceForNextEgg} kr.`,
+          data: this.formatCurrency(result.priceForNextEgg),
           description: "Pris for næste æg indenfor den valgte periode"
         },
         {
@@ -113,6 +113,13 @@ export default defineComponent({
           description: "Totalt antal dage med høns"
         },
       ]
+    },
+    formatCurrency(input?: number): string | undefined {
+      if (input == null) {
+        return undefined;
+      }
+
+      return input.toLocaleString('da-dk', {currency: 'DKK', style: 'currency'});
     },
   },
   watch: {

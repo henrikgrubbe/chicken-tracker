@@ -31,7 +31,7 @@
         <tbody class="table-group-divider">
         <tr v-for="logLine of logLines" v-bind:key="logLine.key">
           <td>
-            {{ logLine.date.toLocaleDateString() }}
+            {{ formatDate(logLine.date) }}
           </td>
           <td>
             {{ logLine.note }}
@@ -169,7 +169,13 @@ export default defineComponent({
         case "TransactionEvent":
           return logLine.amount > 0 ? "#198754" : "#dc3545";
       }
-    }
+    },
+    formatDate(input: Date): string {
+      return input.toLocaleDateString("da-DK", {
+        month: "short",
+        day: "numeric"
+      });
+    },
   },
   watch: {
     dateRange() {
