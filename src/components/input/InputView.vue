@@ -68,7 +68,7 @@ const now = setHours(new Date(), 12);
 
 
 export default defineComponent({
-  name: "TabInput",
+  name: "InputView",
   components: {NewTransactionEventModal, Datepicker},
   data() {
     return {

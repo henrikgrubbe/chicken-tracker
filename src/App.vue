@@ -7,16 +7,13 @@
       <div>
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" :class="{ active: selectedTab === Tab.INPUT }" href="#"
-               @click="selectedTab = Tab.INPUT">Input</a>
+            <RouterLink class="nav-link" to="/">Input</RouterLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ active: selectedTab === Tab.STATS }" href="#"
-               @click="selectedTab = Tab.STATS">Statistik</a>
+            <RouterLink class="nav-link" to="/stats">Statistik</RouterLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" :class="{ active: selectedTab === Tab.LOG }" href="#"
-               @click="selectedTab = Tab.LOG">Logbog</a>
+            <RouterLink class="nav-link" to="/log">Log</RouterLink>
           </li>
         </ul>
       </div>
@@ -26,18 +23,16 @@
   <ToastComponent></ToastComponent>
 
   <div class="container">
-    <TabInput v-if="selectedTab === Tab.INPUT"></TabInput>
-    <TabStats v-if="selectedTab === Tab.STATS"></TabStats>
-    <TabLog v-if="selectedTab === Tab.LOG"></TabLog>
+    <RouterView/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue';
 import {Tab} from "@/types/Tab";
-import TabLog from "@/components/log/TabLog.vue";
-import TabInput from "@/components/input/TabInput.vue";
-import TabStats from "@/components/stats/TabStats.vue";
+import TabLog from "@/components/log/LogView.vue";
+import TabInput from "@/components/input/InputView.vue";
+import TabStats from "@/components/stats/StatsView.vue";
 import ToastComponent from "@/components/ToastComponent.vue";
 
 export default defineComponent({

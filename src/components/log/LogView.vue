@@ -92,7 +92,7 @@ import DeleteEventModal from "@/components/log/DeleteEventModal.vue";
 const now = new Date();
 
 export default defineComponent({
-  name: "TabLog",
+  name: "LogView",
   components: {DeleteEventModal, EditTransactionEventModal, EditEggEventModal, Datepicker},
   data() {
     return {

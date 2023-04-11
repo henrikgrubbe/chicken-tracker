@@ -45,7 +45,7 @@ import {StatisticsApi} from "@/util/Api";
 const now = new Date();
 
 export default defineComponent({
-  name: "TabStats",
+  name: "StatsView",
   components: {Datepicker},
   data() {
     return {
