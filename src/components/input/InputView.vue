@@ -88,7 +88,7 @@ export default defineComponent({
       .then(() => {
         ToastService.showToast({
           title: "Succes",
-          body: "Æg gemt",
+          body: `${this.numEggs} æg gemt`,
           timestamp: new Date()
         });
 
