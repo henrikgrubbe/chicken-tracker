@@ -7,11 +7,6 @@ const router = createRouter({
   linkActiveClass: 'active',
   routes: [
     {
-      path: '/',
-      name: 'input',
-      component: () => import('@/components/input/InputView.vue')
-    },
-    {
       path: '/auth',
       name: 'auth',
       component: () => import('@/components/auth/AuthView.vue')
@@ -22,15 +17,24 @@ const router = createRouter({
       component: () => import('@/components/stats/StatsView.vue')
     },
     {
+      path: '/input',
+      name: 'input',
+      component: () => import('@/components/input/InputView.vue')
+    },
+    {
       path: '/log',
       name: 'log',
       component: () => import('@/components/log/LogView.vue')
     },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/stats'
+    }
   ],
 });
 
 router.beforeEach(async (to, from) => {
-  if (to.name === 'auth') {
+  if (to.name === 'auth' || to.name === 'stats') {
     return true;
   }
 
