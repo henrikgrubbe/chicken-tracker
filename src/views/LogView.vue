@@ -1,9 +1,10 @@
 <template>
-  <DeleteEventModal :log-line="selectedLogLine" @deleted="getLogLines"></DeleteEventModal>
+  <div v-if="auth.isAuthorized">
+    <DeleteEventModal :log-line="selectedLogLine" @deleted="getLogLines"/>
 
-  <EditEggEventModal :log-line="selectedLogLine" @saved="getLogLines"></EditEggEventModal>
-  <EditTransactionEventModal :log-line="selectedLogLine"
-                             @saved="getLogLines"></EditTransactionEventModal>
+    <EditEggEventModal :log-line="selectedLogLine" @saved="getLogLines"/>
+    <EditTransactionEventModal :log-line="selectedLogLine" @saved="getLogLines"/>
+  </div>
 
   <div class="row my-2">
     <div>
@@ -22,24 +23,25 @@
       <table class="table align-middle">
         <thead class="sticky-top">
         <tr>
-          <th scope="col">Dato</th>
-          <th scope="col">Type</th>
-          <th scope="col">Værdi</th>
+          <th class="text-start" scope="col">Dato</th>
+          <th class="text-center" scope="col">Type</th>
+          <th class="text-end" scope="col">Værdi</th>
+          <th v-if="auth.isAuthorized" scope="col"></th>
         </tr>
         </thead>
 
         <tbody class="table-group-divider">
         <tr v-for="logLine of logLines" v-bind:key="logLine.key">
-          <td>
+          <td class="text-start">
             {{ formatDate(logLine.date) }}
           </td>
-          <td>
+          <td class="text-center">
             {{ logLine.note }}
           </td>
-          <td :style="{ color: getLogLineAmountColor(logLine) }">
+          <td class="text-end" :style="{ color: getLogLineAmountColor(logLine) }">
             {{ getFormattedLogLineAmount(logLine) }}
           </td>
-          <td>
+          <td class="text-end" v-if="auth.isAuthorized">
             <div class="btn-group">
               <button class="btn btn-sm mb-md-0 rounded-2" type="button"
                       data-bs-toggle="modal" @click="selectedLogLine = logLine"
@@ -54,9 +56,12 @@
               <button class="btn btn-sm mb-md-0 rounded-2" type="button"
                       data-bs-toggle="modal" @click="selectedLogLine = logLine"
                       data-bs-target="#deleteEventModal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-trash" viewBox="0 0 16 16">
+                  <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd"
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                 </svg>
               </button>
             </div>
@@ -88,6 +93,7 @@ import type {EggEventOutput, TransactionEventOutput} from "@/api/chicken-data";
 import EditEggEventModal from "@/components/log/EditEggEventModal.vue";
 import EditTransactionEventModal from "@/components/log/EditTransactionEventModal.vue";
 import DeleteEventModal from "@/components/log/DeleteEventModal.vue";
+import {authInfo} from "@/composables/authInfo";
 
 const now = new Date();
 
@@ -96,6 +102,7 @@ export default defineComponent({
   components: {DeleteEventModal, EditTransactionEventModal, EditEggEventModal, Datepicker},
   data() {
     return {
+      auth: {...authInfo()},
       dateRange: [startOfMonth(now), endOfMonth(now)],
       presetRanges: [
         {label: 'I dag', range: [now, now]},

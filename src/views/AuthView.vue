@@ -26,7 +26,7 @@ export default defineComponent({
       const user = new PassageUser();
       await user.signOut();
       await this.setSignedIn();
-    }
+    },
   },
   mounted() {
     this.setSignedIn();
@@ -40,7 +40,7 @@ export default defineComponent({
 
     <div v-else>
       <passage-profile :app-id="appId" default-country-code="DK" />
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-center mt-2">
           <button class="btn btn-outline-primary" @click="signOut">Log ud</button>
       </div>
     </div>

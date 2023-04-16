@@ -1,7 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {PassageUser} from '@passageidentity/passage-elements/passage-user'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   linkActiveClass: 'active',
@@ -9,22 +8,22 @@ const router = createRouter({
     {
       path: '/auth',
       name: 'auth',
-      component: () => import('@/components/auth/AuthView.vue')
+      component: () => import('@/views/AuthView.vue')
     },
     {
       path: '/stats',
       name: 'stats',
-      component: () => import('@/components/stats/StatsView.vue')
+      component: () => import('@/views/StatsView.vue')
     },
     {
       path: '/input',
       name: 'input',
-      component: () => import('@/components/input/InputView.vue')
+      component: () => import('@/views/InputView.vue')
     },
     {
       path: '/log',
       name: 'log',
-      component: () => import('@/components/log/LogView.vue')
+      component: () => import('@/views/LogView.vue')
     },
     {
       path: '/:pathMatch(.*)*',
@@ -34,7 +33,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  if (to.name === 'auth' || to.name === 'stats') {
+  if (to.name !== 'input') {
     return true;
   }
 
