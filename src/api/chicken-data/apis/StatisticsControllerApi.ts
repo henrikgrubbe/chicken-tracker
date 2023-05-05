@@ -15,9 +15,12 @@
 
 import * as runtime from '../runtime';
 import type {
+  GroupByUnitInput,
   StatisticsOutput,
 } from '../models';
 import {
+    GroupByUnitInputFromJSON,
+    GroupByUnitInputToJSON,
     StatisticsOutputFromJSON,
     StatisticsOutputToJSON,
 } from '../models';
@@ -25,6 +28,7 @@ import {
 export interface GetStatsRequest {
     from: Date;
     to: Date;
+    unit?: GroupByUnitInput;
 }
 
 /**
@@ -34,7 +38,7 @@ export class StatisticsControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getStatsRaw(requestParameters: GetStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StatisticsOutput>> {
+    async getStatsRaw(requestParameters: GetStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<StatisticsOutput>>> {
         if (requestParameters.from === null || requestParameters.from === undefined) {
             throw new runtime.RequiredError('from','Required parameter requestParameters.from was null or undefined when calling getStats.');
         }
@@ -53,6 +57,10 @@ export class StatisticsControllerApi extends runtime.BaseAPI {
             queryParameters['to'] = (requestParameters.to as any).toISOString().substr(0,10);
         }
 
+        if (requestParameters.unit !== undefined) {
+            queryParameters['unit'] = requestParameters.unit;
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -62,12 +70,12 @@ export class StatisticsControllerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => StatisticsOutputFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(StatisticsOutputFromJSON));
     }
 
     /**
      */
-    async getStats(requestParameters: GetStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StatisticsOutput> {
+    async getStats(requestParameters: GetStatsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<StatisticsOutput>> {
         const response = await this.getStatsRaw(requestParameters, initOverrides);
         return await response.value();
     }

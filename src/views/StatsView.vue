@@ -70,7 +70,7 @@ export default defineComponent({
       const from = this.dateRange[0];
       const to = addDays(this.dateRange[1], 1);
 
-      const result = await StatisticsApi.getStats({from, to});
+      const result = (await StatisticsApi.getStats({from, to}))[0];
 
       this.items = [
         {

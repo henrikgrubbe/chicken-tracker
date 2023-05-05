@@ -21,6 +21,18 @@ import { exists, mapValues } from '../runtime';
 export interface StatisticsOutput {
     /**
      * 
+     * @type {Date}
+     * @memberof StatisticsOutput
+     */
+    from: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof StatisticsOutput
+     */
+    to: Date;
+    /**
+     * 
      * @type {number}
      * @memberof StatisticsOutput
      */
@@ -74,6 +86,8 @@ export interface StatisticsOutput {
  */
 export function instanceOfStatisticsOutput(value: object): boolean {
     let isInstance = true;
+    isInstance = isInstance && "from" in value;
+    isInstance = isInstance && "to" in value;
     isInstance = isInstance && "expenses" in value;
     isInstance = isInstance && "income" in value;
     isInstance = isInstance && "saved" in value;
@@ -96,6 +110,8 @@ export function StatisticsOutputFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
+        'from': json['from'],
+        'to': json['to'],
         'expenses': json['expenses'],
         'income': json['income'],
         'saved': json['saved'],
@@ -116,6 +132,8 @@ export function StatisticsOutputToJSON(value?: StatisticsOutput | null): any {
     }
     return {
         
+        'from': value.from,
+        'to': value.to,
         'expenses': value.expenses,
         'income': value.income,
         'saved': value.saved,
