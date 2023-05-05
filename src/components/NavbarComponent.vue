@@ -36,6 +36,9 @@ export default defineComponent({
             <RouterLink class="nav-link" to="/log">Log</RouterLink>
           </li>
           <li class="nav-item">
+            <RouterLink class="nav-link" to="/graphs">Grafer</RouterLink>
+          </li>
+          <li class="nav-item">
             <div v-if="auth.isLoading" class="nav-link">
               <div class="spinner-border spinner-border-sm" role="status"/>
             </div>

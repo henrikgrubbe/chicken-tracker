@@ -26,6 +26,11 @@ const router = createRouter({
       component: () => import('@/views/LogView.vue')
     },
     {
+      path: '/graphs',
+      name: 'graphs',
+      component: () => import('@/views/GraphsView.vue')
+    },
+    {
       path: '/:pathMatch(.*)*',
       redirect: '/stats'
     }
