@@ -8,21 +8,13 @@
 
   <div class="row mb-3">
     <div>
-      <Bar
-          id="my-chart-id"
-          :options="monthly.chartOptions"
-          :data="monthly.chartData"
-      />
+      <Bar :options="monthly.chartOptions" :data="monthly.chartData"/>
     </div>
   </div>
 
   <div class="row mb-3">
     <div>
-      <Bar
-          id="my-chart-id"
-          :options="daily.chartOptions"
-          :data="daily.chartData"
-      />
+      <Bar :options="daily.chartOptions" :data="daily.chartData"/>
     </div>
   </div>
 </template>
@@ -35,9 +27,12 @@ import {addDays, endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear} f
 import {StatisticsApi} from "@/util/Api";
 import {Bar} from 'vue-chartjs'
 import {
+  type ActiveElement,
   BarElement,
   CategoryScale,
+  Chart,
   Chart as ChartJS,
+  type ChartEvent,
   Legend,
   LinearScale,
   Title,
@@ -61,14 +56,17 @@ export default defineComponent({
     return {
       monthly: {
         chartData: {
-          datasets: []
+          datasets: [] as any[]
         },
         chartOptions: {
           responsive: true,
-          backgroundColor: [
-            '#13795b',
-          ],
-          onClick: this.monthClicked,
+          backgroundColor: '#13795b',
+          onClick: (event: ChartEvent, elements: ActiveElement[], chart: Chart<any, any[], any>) => {
+            if (elements.length === 0) {
+              return;
+            }
+            this.monthClicked(elements[0], chart);
+          },
           parsing: {
             xAxisKey: 'xDisplay'
           }
@@ -76,13 +74,11 @@ export default defineComponent({
       },
       daily: {
         chartData: {
-          datasets: []
+          datasets: [] as any[]
         },
         chartOptions: {
           responsive: true,
-          backgroundColor: [
-            '#13795b',
-          ],
+          backgroundColor: '#13795b',
         },
       }
 
@@ -110,7 +106,7 @@ export default defineComponent({
         ]
       };
     },
-    chartDataFromStatisticsOutput(result: StatisticsOutput, displayFn: (date) => string): ChartData {
+    chartDataFromStatisticsOutput(result: StatisticsOutput, displayFn: (x: Date) => string): ChartData {
       const date = new Date(result.from);
 
       return {
@@ -119,13 +115,9 @@ export default defineComponent({
         y: result.numberOfEggs
       }
     },
-    monthClicked(event, elements, chart): void {
-      if (elements == null || elements.length === 0) {
-        return;
-      }
-
-      const dataset = elements[0].datasetIndex;
-      const index = elements[0].index;
+    monthClicked(element: ActiveElement, chart: Chart<any>): void {
+      const dataset = element.datasetIndex;
+      const index = element.index;
 
       const dataPoint: ChartData = chart.data.datasets[dataset].data[index];
       this.getDaily(addDays(startOfMonth(dataPoint.x), 1), addDays(endOfMonth(dataPoint.x), 1));
