@@ -69,8 +69,22 @@ export default defineComponent({
           },
           parsing: {
             xAxisKey: 'xDisplay'
+          },
+          borderRadius: 2,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Æg per måned'
+            },
+            legend: {
+              display: false
+            },
           }
         },
+      },
+      selectedMonth: {
+        from: addDays(startOfMonth(now), 1),
+        to: addDays(endOfMonth(now), 1)
       },
       daily: {
         chartData: {
@@ -79,6 +93,25 @@ export default defineComponent({
         chartOptions: {
           responsive: true,
           backgroundColor: '#13795b',
+          parsing: {
+            xAxisKey: 'xDisplay'
+          },
+          borderRadius: 2,
+          scales: {
+            y: {
+              min: 0,
+              max: 8,
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Æg per dag'
+            },
+            legend: {
+              display: false
+            },
+          }
         },
       }
 
@@ -90,12 +123,12 @@ export default defineComponent({
       const to = addDays(endOfYear(now), 1);
 
       const data = await StatisticsApi.getStats({from, to, unit: "MONTH"})
-      .then((result) =>
-          result.map((result) =>
-              this.chartDataFromStatisticsOutput(
-                  result,
-                  (date) => date.toLocaleString('da-DK', {month: 'long'})
-              )));
+          .then((result) =>
+              result.map((result) =>
+                  this.chartDataFromStatisticsOutput(
+                      result,
+                      (date) => date.toLocaleString('da-DK', {month: 'short'})
+                  )));
 
       this.monthly.chartData = {
         datasets: [
@@ -120,16 +153,20 @@ export default defineComponent({
       const index = element.index;
 
       const dataPoint: ChartData = chart.data.datasets[dataset].data[index];
-      this.getDaily(addDays(startOfMonth(dataPoint.x), 1), addDays(endOfMonth(dataPoint.x), 1));
+      this.selectedMonth = {
+        from: addDays(startOfMonth(dataPoint.x), 1),
+        to: addDays(endOfMonth(dataPoint.x), 1)
+      };
+      // this.getDaily(addDays(startOfMonth(dataPoint.x), 1), addDays(endOfMonth(dataPoint.x), 1));
     },
     async getDaily(from: Date, to: Date): Promise<void> {
       const data = await StatisticsApi.getStats({from, to, unit: "DAY"})
-      .then((result) =>
-          result.map((result) =>
-              this.chartDataFromStatisticsOutput(
-                  result,
-                  (date) => date.toLocaleString('da-DK', {day: 'numeric'})
-              )));
+          .then((result) =>
+              result.map((result) =>
+                  this.chartDataFromStatisticsOutput(
+                      result,
+                      (date) => date.toLocaleString('da-DK', {day: 'numeric'})
+                  )));
 
       this.daily.chartData = {
         datasets: [
@@ -141,9 +178,17 @@ export default defineComponent({
       };
     },
   },
-  watch: {},
+  watch: {
+    selectedMonth: {
+      handler: function (val) {
+        this.getDaily(val.from, val.to);
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.getMonthly();
+    this.getDaily(this.selectedMonth.from, this.selectedMonth.to);
   }
 });
 </script>
