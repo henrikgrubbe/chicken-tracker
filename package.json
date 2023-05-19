@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@passageidentity/passage-elements": "^1.5.1",
-    "@vuepic/vue-datepicker": "^5.1.1",
+    "@vuepic/vue-datepicker": "^5.1.2",
     "bootstrap": "^5.2.3",
     "chart.js": "^4.3.0",
     "rxjs": "^7.8.1",
