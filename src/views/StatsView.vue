@@ -38,7 +38,9 @@ import {
   startOfMonth,
   startOfYear,
   subMonths,
-  subYears
+  subYears,
+  differenceInDays,
+  min
 } from "date-fns";
 import type {StatisticsItem} from "@/types/StatisticsItem";
 import {StatisticsApi} from "@/util/Api";
@@ -71,6 +73,8 @@ export default defineComponent({
       const to = addDays(this.dateRange[1], 1);
 
       const result = (await StatisticsApi.getStats({from, to}))[0];
+      const numberOfDays = this.calculateNumberDays(from, to, result.daysWithChickens);
+      console.log(numberOfDays);
 
       this.items = [
         {
@@ -99,6 +103,11 @@ export default defineComponent({
           description: "Antal æg for den valgte periode"
         },
         {
+          title: "Æg per dag",
+          data: `${(result.numberOfEggs / numberOfDays).toFixed(2)} æg`,
+          description: "Antal æg per dag i den valgte periode"
+        },
+        {
           title: "Pris per æg",
           data: this.formatCurrency(result.pricePerEgg),
           description: "Pris per æg i den valgte periode"
@@ -114,6 +123,9 @@ export default defineComponent({
           description: "Totalt antal dage med høns"
         },
       ]
+    },
+    calculateNumberDays(from: Date, to: Date, totalDays: number) {
+      return Math.min(totalDays, differenceInDays(min([to, now]), from));
     },
     formatCurrency(input?: number): string | undefined {
       if (input == null) {
