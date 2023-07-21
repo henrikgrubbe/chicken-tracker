@@ -36,7 +36,9 @@ import {
   Legend,
   LinearScale,
   Title,
-  Tooltip
+  Tooltip,
+  PointElement,
+  LineElement,
 } from 'chart.js'
 import type {StatisticsOutput} from "@/api/chicken-data";
 
@@ -46,7 +48,7 @@ type ChartData = {
   y: number
 }
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, BarElement, PointElement, LineElement, CategoryScale, LinearScale)
 const now = startOfDay(new Date());
 
 export default defineComponent({
@@ -59,6 +61,13 @@ export default defineComponent({
           datasets: [] as any[]
         },
         chartOptions: {
+          datasets: {
+            line: {
+              pointRadius: 2,
+              backgroundColor: '#dc3545',
+              borderColor: 'rgba(220,53,69,0.1)'
+            }
+          },
           responsive: true,
           backgroundColor: '#13795b',
           onClick: (event: ChartEvent, elements: ActiveElement[], chart: Chart<any, any[], any>) => {
@@ -100,7 +109,7 @@ export default defineComponent({
           scales: {
             y: {
               min: 0,
-              max: 8,
+              max: 6,
             }
           },
           plugins: {
@@ -129,13 +138,19 @@ export default defineComponent({
                       result,
                       (date) => date.toLocaleString('da-DK', {month: 'short'})
                   )));
+      const runningAverage = this.runningAverageCharData(data);
 
       this.monthly.chartData = {
         datasets: [
           {
+            label: 'Gennemsnit',
+            data: runningAverage,
+            type: 'line',
+          },
+          {
             label: 'Antal æg',
             data
-          }
+          },
         ]
       };
     },
@@ -167,16 +182,44 @@ export default defineComponent({
                       result,
                       (date) => date.toLocaleString('da-DK', {day: 'numeric'})
                   )));
+      const runningAverage = this.runningAverageCharData(data);
 
       this.daily.chartData = {
         datasets: [
           {
             label: 'Antal æg',
             data
+          },
+          {
+            label: 'Gennemsnit',
+            data: runningAverage,
+            type: 'line'
           }
         ]
       };
     },
+    runningAverageCharData(data: ChartData[]): ChartData[] {
+      const result: ChartData[] = [];
+      let previousAverage = 0;
+
+      for (let i = 0; i < data.length; i++) {
+        const dataPoint = data[i];
+        let currentAverage: number;
+        if (dataPoint.y == 0) {
+          currentAverage = previousAverage;
+        } else {
+          currentAverage = ((previousAverage * i) + dataPoint.y) / (i + 1);
+        }
+        result.push({
+          x: dataPoint.x,
+          xDisplay: dataPoint.xDisplay,
+          y: currentAverage.toFixed(2)
+        });
+        previousAverage = currentAverage;
+      }
+
+      return result;
+    }
   },
   watch: {
     selectedMonth: {
