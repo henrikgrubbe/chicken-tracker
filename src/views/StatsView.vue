@@ -74,7 +74,6 @@ export default defineComponent({
 
       const result = (await StatisticsApi.getStats({from, to}))[0];
       const numberOfDays = this.calculateNumberDays(from, to, result.daysWithChickens);
-      console.log(numberOfDays);
 
       this.items = [
         {

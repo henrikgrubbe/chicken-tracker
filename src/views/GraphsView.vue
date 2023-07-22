@@ -27,19 +27,20 @@ import {addDays, endOfMonth, endOfYear, startOfDay, startOfMonth, startOfYear, i
 import {StatisticsApi} from "@/util/Api";
 import {Bar} from 'vue-chartjs'
 import {
-  type ActiveElement,
-  BarElement,
-  CategoryScale,
   Chart,
   Chart as ChartJS,
+  type ActiveElement,
   type ChartEvent,
+  type ChartOptions,
   Legend,
   LinearScale,
   Title,
   Tooltip,
+  BarElement,
+  CategoryScale,
   PointElement,
   LineElement,
-  type ChartOptions,
+  LineController,
 } from 'chart.js'
 import type {StatisticsOutput} from '@/api/chicken-data';
 
@@ -49,7 +50,7 @@ type ChartData = {
   y: number | string,
 }
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, PointElement, LineElement, CategoryScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, BarElement, PointElement, LineController, LineElement, CategoryScale, LinearScale)
 const now = startOfDay(new Date());
 
 const defaultChartOptions = {
