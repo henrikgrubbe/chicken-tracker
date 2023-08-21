@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "@passageidentity/passage-elements": "^1.10.0",
+    "@passageidentity/passage-elements": "^1.11.0",
     "@vuepic/vue-datepicker": "^6.0.0",
     "bootstrap": "^5.3.1",
     "chart.js": "^4.3.3",
