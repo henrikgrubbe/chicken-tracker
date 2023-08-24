@@ -16,7 +16,7 @@
     "@passageidentity/passage-elements": "^1.11.0",
     "@vuepic/vue-datepicker": "^6.0.1",
     "bootstrap": "^5.3.1",
-    "chart.js": "^4.3.3",
+    "chart.js": "^4.4.0",
     "rxjs": "^7.8.1",
     "vue": "^3.3.4",
     "vue-chartjs": "^5.2.0",
