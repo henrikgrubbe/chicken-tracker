@@ -26,7 +26,7 @@
     "@openapitools/openapi-generator-cli": "^2.12.0",
     "@rushstack/eslint-patch": "^1.7.2",
     "@types/bootstrap": "^5.2.10",
-    "@types/node": "^20.11.27",
+    "@types/node": "^20.11.28",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/tsconfig": "^0.5.1",
