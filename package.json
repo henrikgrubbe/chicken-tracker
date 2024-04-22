@@ -23,7 +23,7 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.13.2",
+    "@openapitools/openapi-generator-cli": "^2.13.4",
     "@rushstack/eslint-patch": "^1.10.2",
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^20.12.7",
